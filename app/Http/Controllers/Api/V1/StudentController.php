@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use DB;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,10 +12,43 @@ class StudentController extends Controller
 {
     public function index() 
     {
-        $student = Student::all();
+        // $student = Student::all();
+        $student = Student::offset(0)->limit(5)->get();
         $data = [
             'status' => 200,
             'student' => $student
+        ];
+        
+        return response()->json($data, 200);
+
+    }
+
+    //No Parameter Binding
+    // public function show(Request $request) 
+    // {
+    //     $id = $request->id; // Assume this comes from user input, such as a form or URL
+    //     $query = "SELECT * FROM students WHERE id = $id";
+    //     $results = DB::select($query);
+
+    //     $data = [
+    //         'status' => 200,
+    //         'student' => $results
+    //     ];
+        
+    //     return response()->json($data, 200);
+
+    // }
+
+    //With Parameter Binding
+    public function show(Request $request) 
+    {
+        $id = $request->id; // Assume this comes from user input, such as a form or URL
+        $query = "SELECT * FROM students WHERE id = ?";
+        $results = DB::select($query, [$id]);
+
+        $data = [
+            'status' => 200,
+            'student' => $results
         ];
         
         return response()->json($data, 200);
